@@ -1,0 +1,121 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Профиль</title>
+  <link rel="stylesheet" href="{% static 'styles10.css' %}">
+</head>
+<body>
+  <a class="back" href="{% url 'main_page' %}">На главную</a>
+
+  <form class="logout" action="{% url 'logout' %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Выйти</button>
+  </form>
+
+  <main class="profile">
+    <form class="form" action="{% url 'profile' %}" method="post">
+      {% csrf_token %}
+
+      <!-- Эти кнопки стоят первыми в коде, чтобы Enter в поле сохранял форму.
+           На экране их положение задаёт CSS (position: fixed). -->
+      <div class="buttons">
+        <a class="cancel" href="{% url 'profile' %}">Отмена</a>
+        <button class="save" type="submit">Сохранить</button>
+      </div>
+
+      <div class="top-bar">
+        {% for message in messages %}
+          <p class="message {{ message.tags }}">{{ message }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="table-wrap">
+        <table class="table">
+          <colgroup>
+            <col class="col-label">
+            <col class="col-value">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Параметр</th>
+              <th>Значение</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="label">ФИО</td>
+              <td>
+                <label class="cell">
+                  <textarea name="fio" rows="1" maxlength="200" autocomplete="off"
+                            aria-label="ФИО">
+{{ values.fio }}</textarea>
+                </label>
+              </td>
+            </tr>
+            <tr>
+              <td class="label">Дата рождения</td>
+              <td>
+                <label class="cell">
+                  <input type="text" name="birth" value="{{ values.birth }}" maxlength="10"
+                         inputmode="numeric" autocomplete="off" placeholder="ДД.ММ.ГГГГ"
+                         pattern="\d{2}[.\-/]\d{2}[.\-/]\d{4}|\d{4}-\d{2}-\d{2}"
+                         title="Дата в формате ДД.ММ.ГГГГ" aria-label="Дата рождения">
+                </label>
+              </td>
+            </tr>
+            <tr>
+              <td class="label">Email</td>
+              <td class="static">{{ email }}</td>
+            </tr>
+            <tr>
+              <td class="label">Логин</td>
+              <td>
+                <label class="cell">
+                  <textarea name="username" rows="1" maxlength="150" autocomplete="off"
+                            aria-label="Логин">
+{{ values.username }}</textarea>
+                </label>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="section-title">Смена пароля</h2>
+
+      <div class="table-wrap passwords">
+        <table class="table">
+          <colgroup>
+            <col class="col-label">
+            <col class="col-value">
+          </colgroup>
+          <tbody>
+            <tr>
+              <td class="label">Текущий пароль</td>
+              <td>
+                <label class="cell">
+                  <input type="password" name="old_password" maxlength="128"
+                         autocomplete="current-password" aria-label="Текущий пароль">
+                </label>
+              </td>
+            </tr>
+            <tr>
+              <td class="label">Новый пароль</td>
+              <td>
+                <label class="cell">
+                  <input type="password" name="new_password" maxlength="128"
+                         autocomplete="new-password" aria-label="Новый пароль">
+                </label>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="hint">Если пароль менять не нужно, оставьте эти поля пустыми.</p>
+    </form>
+  </main>
+</body>
+</html>

@@ -14,47 +14,69 @@
     <form class="form" action="{% url 'expenses' %}" method="post">
       {% csrf_token %}
 
-      <select name="wallet" aria-label="Тип кошелька" required>
-        <option value="" selected disabled>Выберите тип кошелька...</option>
-        <option value="cash">Наличные</option>
-        <option value="card">Банковская карта</option>
-      </select>
-
-      <select name="category" aria-label="Категория расходов" required>
-        <option value="" selected disabled>Выберите категорию расходов...</option>
-        <option value="food">Продукты</option>
-        <option value="cafes">Кафе и рестораны</option>
-        <option value="transport">Транспорт</option>
-        <option value="fuel">Топливо</option>
-        <option value="housing">Жильё и аренда</option>
-        <option value="utilities">Коммунальные услуги</option>
-        <option value="shopping">Одежда и обувь</option>
-        <option value="health">Здоровье и лекарства</option>
-        <option value="beauty">Красота и уход</option>
-        <option value="entertainment">Развлечения</option>
-        <option value="subscriptions">Подписки и сервисы</option>
-        <option value="communication">Связь и интернет</option>
-        <option value="education">Образование</option>
-        <option value="travel">Путешествия</option>
-        <option value="children">Дети</option>
-        <option value="pets">Домашние животные</option>
-        <option value="household">Товары для дома</option>
-        <option value="gifts">Подарки и благотворительность</option>
-        <option value="insurance">Страхование</option>
-        <option value="other">Другое</option>
-      </select>
-
-      <label for="amount">Введите сумму ваших расходов в рублях</label>
-      <input id="amount" name="amount" type="number" inputmode="decimal"
-             min="0.01" max="9999999999.99" step="0.01" required>
-
-      {% for message in messages %}
-        <p class="message {{ message.tags }}">{{ message }}</p>
-      {% endfor %}
-
+      <!-- Эти кнопки стоят первыми в коде, чтобы Enter в поле даты сохранял таблицу,
+           а не добавлял строку. На экране их положение задаёт CSS (position: fixed). -->
       <div class="buttons">
-        <button class="cancel" type="reset">Отмена</button>
+        <a class="cancel" href="{% url 'expenses' %}">Отмена</a>
         <button class="save" type="submit">Сохранить</button>
+      </div>
+
+      <div class="top-bar">
+        <button class="add" type="submit" name="action" value="add_row"
+                formnovalidate formaction="{% url 'expenses' %}#last-row">Продолжить таблицу</button>
+        {% for message in messages %}
+          <p class="message {{ message.tags }}">{{ message }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Дата</th>
+              <th>Вид кошелька</th>
+              <th>Категория расходов</th>
+              <th>Сумма</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in rows %}
+            <tr{% if forloop.last %} id="last-row"{% endif %}>
+              <td>
+                <label class="cell">
+                  <input type="text" name="date" value="{{ row.date }}" maxlength="10"
+                         inputmode="numeric" autocomplete="off" placeholder="ДД.ММ.ГГГГ"
+                         pattern="\d{2}[.\-/]\d{2}[.\-/]\d{4}|\d{4}-\d{2}-\d{2}"
+                         title="Дата в формате ДД.ММ.ГГГГ"
+                         aria-label="Дата"
+                         {% if added and forloop.last %}autofocus{% endif %}>
+                </label>
+              </td>
+              <td>
+                <label class="cell">
+                  <textarea name="wallet" rows="1" maxlength="2000" autocomplete="off"
+                            aria-label="Вид кошелька">
+{{ row.wallet }}</textarea>
+                </label>
+              </td>
+              <td>
+                <label class="cell">
+                  <textarea name="category" rows="1" maxlength="2000" autocomplete="off"
+                            aria-label="Категория расходов">
+{{ row.category }}</textarea>
+                </label>
+              </td>
+              <td>
+                <label class="cell">
+                  <textarea name="amount" rows="1" maxlength="2000" autocomplete="off"
+                            aria-label="Сумма в рублях">
+{{ row.amount }}</textarea>
+                </label>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
     </form>
   </main>

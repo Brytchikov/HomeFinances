@@ -77,11 +77,6 @@ class TransactionTag(models.Model):
         unique_together = ('transaction', 'tag')
 
 
-class RecurringTransaction(models.Model):
-    frequency = models.CharField(max_length=50)
-    next_date = models.DateField()
-    transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name='recurrences')
-
 
 class ExpenseCategory(models.Model):
     name = models.CharField(max_length=100)

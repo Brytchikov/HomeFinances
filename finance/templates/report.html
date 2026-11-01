@@ -2,45 +2,39 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Отчёт</title>
-    <link rel="stylesheet" href="{% static 'styles6.css' %}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Отчёт</title>
+  <link rel="stylesheet" href="{% static 'styles6.css' %}">
 </head>
 <body>
+  <a class="back" href="{% url 'main_page' %}">На главную</a>
 
-
-    <main class="dashboard">
-        <section class="summary">
-            <div class="summary-card">
-                <span class="summary-title">Баланс</span>
-                <strong class="summary-value">{{ balance }} ₽</strong>
-            </div>
-            <div class="summary-card">
-                <span class="summary-title">Доходы</span>
-                <strong class="summary-value income">{{ income_total }} ₽</strong>
-            </div>
-            <div class="summary-card">
-                <span class="summary-title">Расходы</span>
-                <strong class="summary-value expense">{{ expense_total }} ₽</strong>
-            </div>
-        </section>
-
-        <section class="transactions">
-            {% for op in operations %}
-                <div class="transaction {{ op.kind }}">
-                    <div class="transaction-info">
-                        <span class="transaction-category">{{ op.category }}</span>
-                        <span class="transaction-meta">{{ op.wallet }} · {{ op.date|date:"d.m.Y" }}</span>
-                    </div>
-                    <strong class="transaction-amount">
-                        {% if op.kind == 'income' %}+{% else %}−{% endif %}{{ op.amount }} ₽
-                    </strong>
-                </div>
-            {% empty %}
-                <p class="empty">Операций пока нет.</p>
-            {% endfor %}
-        </section>
-    </main>
+  <main class="report">
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Дата</th>
+            <th>Вид кошелька</th>
+            <th>Транзакция</th>
+            <th>Сумма</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for op in operations %}
+          <tr>
+            <td class="date">{% if op.date %}{{ op.date|date:"d.m.Y" }}{% endif %}</td>
+            <td>{{ op.wallet }}</td>
+            <td>{{ op.title }}</td>
+            <td class="amount {{ op.kind }}">
+              {% if op.kind %}{% if op.kind == 'income' %}+{% else %}−{% endif %}{{ op.amount }} ₽{% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </main>
 </body>
 </html>

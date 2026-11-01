@@ -17,4 +17,6 @@ urlpatterns = [
     path('income/', views.income, name='income'),
     path('report/', views.report, name='report'),
     path('goals/', views.goals, name='goals'),
+    path('budget/', views.budget, name='budget'),
+    path('profile/', views.profile, name='profile'),
 ]

@@ -1,0 +1,284 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: #FFF1CC;
+  color: #000;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.back {
+  position: absolute;
+  top: 32px;
+  left: 38px;
+  font-size: 14px;
+  color: #000;
+  text-decoration: none;
+}
+
+/* «Выйти» — в правом верхнем углу */
+.logout {
+  position: absolute;
+  top: 24px;
+  right: 25px;
+  margin: 0;
+}
+
+.logout button {
+  width: 110px;
+  height: 28px;
+  background: transparent;
+  border: 1px solid #000;
+  font-size: 14px;
+  font-weight: 400;
+  color: #000;
+}
+
+.profile {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 67px 25px 70px;     /* снизу место под фиксированные кнопки */
+}
+
+/* ---------- Кнопки ---------- */
+
+.buttons {
+  position: fixed;
+  right: 18.5%;
+  bottom: 8px;
+  left: 17.1%;
+  z-index: 5;
+  display: flex;
+  justify-content: space-between;
+}
+
+button,
+.cancel {
+  width: 181px;
+  height: 32px;
+  border: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* «Отмена» — ссылка, оформленная так же, как кнопка «Сохранить» */
+.cancel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e00000;
+  color: #fff;
+  text-decoration: none;
+}
+
+.save {
+  background: #4cbd18;
+  color: #111;
+}
+
+.top-bar {
+  min-height: 20px;
+  margin-bottom: 8px;
+}
+
+.message {
+  margin: 0;
+  color: #287a16;
+}
+
+.message.error {
+  color: #c00;
+}
+
+.section-title {
+  margin: 26px 0 8px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.hint {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: #555;
+}
+
+/* ---------- Таблица ---------- */
+
+.table-wrap {
+  max-height: 50vh;
+  overflow-x: hidden;
+  overflow-y: scroll;          /* полоса прокрутки справа */
+  border: 1px solid #000;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+}
+
+.col-label { width: 32%; }
+.col-value { width: 68%; }
+
+.table th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  height: 50px;
+  background: #FFF1CC;
+  font-size: 14px;
+  font-weight: 400;
+  text-align: center;
+}
+
+.table th,
+.table td {
+  padding: 0;
+  border-right: 1px solid #000;
+  border-bottom: 1px solid #000;
+}
+
+.table th:last-child,
+.table td:last-child {
+  border-right: 0;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* левая колонка с названиями параметров и неизменяемые значения */
+.table td.label,
+.table td.static {
+  padding: 8px 10px;
+  vertical-align: top;
+  font-size: 16px;
+  line-height: 1.3;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.table td.label {
+  text-align: center;
+}
+
+/* ---------- Ячейки ввода ---------- */
+
+.cell {
+  display: flex;
+  align-items: flex-start;
+  min-height: 50px;
+  margin: 0;
+  padding: 8px 10px;
+  font-size: 16px;
+  line-height: 1.3;
+  cursor: text;
+}
+
+.cell input,
+.cell textarea {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #111;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.3;
+  text-align: left;
+}
+
+.cell input {
+  height: 1.3em;
+}
+
+.cell textarea {
+  height: auto;
+  min-height: 1.3em;
+  field-sizing: content;       /* высота растёт вместе с текстом, без JavaScript */
+  resize: none;
+  overflow: hidden;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* запасной вариант для браузеров без field-sizing */
+@supports not (field-sizing: content) {
+  .cell textarea {
+    height: 4.2em;
+    overflow-y: auto;
+    resize: vertical;
+  }
+}
+
+.cell input::placeholder {
+  color: #8a8466;
+}
+
+.cell input:focus,
+.cell textarea:focus {
+  outline: none;
+}
+
+@media (max-width: 600px) {
+  .back {
+    top: 20px;
+    left: 20px;
+  }
+
+  .logout {
+    top: 14px;
+    right: 12px;
+  }
+
+  .profile {
+    padding: 60px 12px 70px;
+  }
+
+  .buttons {
+    right: 20px;
+    left: 20px;
+  }
+
+  button,
+  .cancel {
+    width: 44%;
+    font-size: 20px;
+  }
+
+  .logout button {
+    width: 90px;
+    font-size: 13px;
+  }
+
+  .table th {
+    font-size: 11px;
+  }
+
+  .cell,
+  .cell input,
+  .cell textarea,
+  .table td.label,
+  .table td.static {
+    font-size: 13px;
+  }
+
+  .cell,
+  .table td.label,
+  .table td.static {
+    padding: 6px 4px;
+  }
+}

@@ -4,56 +4,107 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Добавление цели</title>
-  <link rel="stylesheet" href="{% static 'styles7.css' %}">
+  <title>Накопления на цели</title>
+  <link rel="stylesheet" href="{% static 'styles9.css' %}">
 </head>
 <body>
-  <main class="container">
-    <header class="header">
-      <h1>Добавление цели</h1>
-      <nav>
-        <a href="/" class="home-link">На главную</a>
-      </nav>
-    </header>
+  <a class="back" href="{% url 'main_page' %}">На главную</a>
 
-    <form id="goal-form" class="goal-form {% if errors %}submitted{% endif %}" method="post">
+  <main class="goals">
+    <form class="form" action="{% url 'goals' %}" method="post">
       {% csrf_token %}
-      <div class="fields">
-        <div class="field">
-          <label for="goal-name">Название цели</label>
-          <input type="text" id="goal-name" name="name" required maxlength="200"
-                 placeholder=" " value="{{ values.name|default:'' }}">
-          {% if errors.name %}<p class="error">{{ errors.name }}</p>{% endif %}
-        </div>
 
-        <div class="field">
-          <label for="goal-desc">Описание цели</label>
-          <input type="text" id="goal-desc" name="description"
-                 placeholder=" " value="{{ values.description|default:'' }}">
-        </div>
-
-        <div class="field">
-          <label for="goal-sum">Сумма в рублях</label>
-          <input type="number" id="goal-sum" name="target_count" required
-                 min="0.01" step="0.01" inputmode="decimal"
-                 placeholder=" " value="{{ values.target_count|default:'' }}">
-          {% if errors.target_count %}<p class="error">{{ errors.target_count }}</p>{% endif %}
-        </div>
+      <!-- Эти кнопки стоят первыми в коде, чтобы Enter в поле сохранял таблицу,
+           а не добавлял строку. На экране их положение задаёт CSS (position: fixed). -->
+      <div class="buttons">
+        <a class="cancel" href="{% url 'goals' %}">Отмена</a>
+        <button class="save" type="submit">Сохранить</button>
       </div>
 
-      <button type="submit" class="btn">Добавить цель</button>
+      <div class="top-bar">
+        <button class="add" type="submit" name="action" value="add_row"
+                formnovalidate formaction="{% url 'goals' %}#last-row">Продолжить таблицу</button>
+        {% for message in messages %}
+          <p class="message {{ message.tags }}">{{ message }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="table-wrap">
+        <table class="table">
+          <colgroup>
+            <col class="col-name">
+            <col class="col-text">
+            <col class="col-sum">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Название</th>
+              <th>Описание</th>
+              <th>Сумма цели</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in rows %}
+            <tr{% if forloop.last %} id="last-row"{% endif %}>
+              <td>
+                <label class="cell">
+                  <textarea name="name" rows="1" maxlength="200" autocomplete="off"
+                            aria-label="Название цели"
+                            {% if added and forloop.last %}autofocus{% endif %}>
+{{ row.name }}</textarea>
+                </label>
+              </td>
+              <td>
+                <label class="cell">
+                  <textarea name="description" rows="1" maxlength="2000" autocomplete="off"
+                            aria-label="Описание цели">
+{{ row.description }}</textarea>
+                </label>
+              </td>
+              <td>
+                <label class="cell">
+                  <textarea name="amount" rows="1" maxlength="30" autocomplete="off"
+                            aria-label="Сумма цели в рублях">
+{{ row.amount }}</textarea>
+                </label>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </form>
 
+    <h2 class="section-title">Мои цели</h2>
+
     {% if goals %}
-    <ul class="goal-list">
-      {% for goal in goals %}
-        <li>
-          <strong>{{ goal.name }}</strong>
-          <span>{{ goal.description }}</span>
-          <b>{{ goal.target_count }} ₽</b>
-        </li>
-      {% endfor %}
-    </ul>
+    <div class="table-wrap saved">
+      <table class="table">
+        <colgroup>
+          <col class="col-name">
+          <col class="col-text">
+          <col class="col-sum">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Название</th>
+            <th>Описание</th>
+            <th>Сумма цели</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for g in goals %}
+          <tr>
+            <td>{{ g.name }}</td>
+            <td class="text">{{ g.description }}</td>
+            <td>{{ g.target_count }} ₽</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+      <p class="empty">Целей пока нет.</p>
     {% endif %}
   </main>
 </body>

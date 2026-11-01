@@ -2,9 +2,15 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
 body {
   min-height: 100vh;
-  margin: 0;
   background: #fff2cc;
   color: #111;
   font-family: Arial, sans-serif;
@@ -12,75 +18,86 @@ body {
 
 .back {
   position: absolute;
-  top: 45px;
-  left: 26px;
+  top: 51px;
+  left: 35px;
   color: inherit;
-  font-size: 20px;
+  font-size: 23px;
   text-decoration: none;
 }
 
 .form {
   position: absolute;
-  top: 140px;
-  left: 20px;
-  width: min(540px, calc(100% - 40px));
+  top: 90px;
+  left: 26px;
+  width: min(1100px, calc(100% - 44px));
 }
 
 select {
   display: block;
-  width: 201px;
-  height: 22px;
-  margin-bottom: 18px;
-  padding: 1px 2px;
-  border: 1px solid #111;
+  width: 255px;
+  height: 28px;
+  margin-bottom: 22px;
+  padding: 1px 5px;
+  border: 2px solid #111;
   border-radius: 0;
   background: transparent;
-  font-size: 11px;
+  color: #111;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
 }
 
 label {
   display: block;
-  margin: 30px 0 8px 9px;
-  font-size: 25px;
+  margin: 38px 0 8px 13px;
+  font-size: 30px;
   font-weight: 700;
+  line-height: 1.2;
 }
 
 input {
   display: block;
-  width: 201px;
-  height: 22px;
-  margin-left: 10px;
-  border: 1px solid #111;
-  border-radius: 3px;
+  width: 255px;
+  height: 28px;
+  margin-left: 13px;
+  border: 2px solid #111;
+  border-radius: 5px;
   background: transparent;
+  font-size: 15px;
 }
 
 .buttons {
   position: fixed;
-  right: 18.5%;
-  bottom: 8px;
   left: 17.1%;
+  right: 18.5%;
+  bottom: 4px;
   display: flex;
   justify-content: space-between;
 }
 
 button,
-.cancel {
-  width: 181px;
-  height: 32px;
+a.cancel {
+  width: 230px;
+  height: 41px;
   border: 0;
-  font-size: 24px;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  font-size: 30px;
   font-weight: 700;
+  line-height: 1;
   cursor: pointer;
 }
 
-.cancel {
+/* «Отмена» — ссылка, оформленная точно так же, как кнопка «Сохранить» */
+a.cancel {
   display: flex;
   align-items: center;
   justify-content: center;
+  text-decoration: none;
+}
+
+.cancel {
   background: #e00000;
   color: #fff;
-  text-decoration: none;
 }
 
 .save {
@@ -89,27 +106,188 @@ button,
 }
 
 .message {
-  margin: 16px 0;
+  margin: 0;
   color: #287a16;
 }
 
-.error {
-  color: #c00;
+.message.error {
+  color: #c00000;
 }
 
-@media (max-width: 520px) {
+/* ---------- Таблица ---------- */
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+button.add {
+  width: 306px;
+  height: 33px;
+  background: #3aaed0;
+  color: #111;
+  font-size: 26px;
+}
+
+.table-wrap {
+  max-height: calc(100vh - 215px);
+  min-height: 150px;
+  overflow-x: hidden;
+  overflow-y: scroll;          /* полоса прокрутки справа */
+  border: 1px solid #111;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+}
+
+.table th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  height: 62px;
+  background: #fff2cc;
+  font-size: 12px;
+  font-weight: 400;
+  text-align: center;
+}
+
+.table th,
+.table td {
+  padding: 0;
+  border-right: 1px solid #111;
+  border-bottom: 1px solid #111;
+}
+
+.table th:last-child,
+.table td:last-child {
+  border-right: 0;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* ячейка растягивается по высоте вслед за текстом */
+.cell {
+  display: flex;
+  align-items: flex-start;
+  min-height: 62px;
+  margin: 0;                   /* сброс общего правила label */
+  padding: 8px 10px;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.3;
+  cursor: text;
+}
+
+.cell input,
+.cell textarea {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;     /* цвет фона страницы */
+  color: #111;
+  font-family: Arial, sans-serif;
+  font-size: 18px;
+  line-height: 1.3;
+  text-align: left;            /* кошелёк, категория, сумма — по левому краю */
+}
+
+.cell input {
+  height: 1.3em;
+}
+
+/* дата — по центру */
+.table td:first-child .cell input {
+  text-align: center;
+}
+
+/* кошелёк, категория и сумма: Enter даёт новую строку, высота растёт вместе с текстом */
+.cell textarea {
+  height: auto;
+  min-height: 1.3em;
+  field-sizing: content;       /* без JavaScript */
+  resize: none;
+  overflow: hidden;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* запасной вариант для браузеров без field-sizing */
+@supports not (field-sizing: content) {
+  .cell textarea {
+    height: 4.2em;
+    overflow-y: auto;
+    resize: vertical;
+  }
+}
+
+.cell input::placeholder {
+  color: #8a8466;
+}
+
+.cell input:focus,
+.cell textarea:focus {
+  outline: none;
+}
+
+@media (max-width: 700px) {
+  .back {
+    font-size: 21px;
+  }
+
+  select,
+  input {
+    width: min(255px, 100%);
+  }
+
+  label {
+    font-size: 21px;
+  }
+
   .buttons {
     right: 20px;
     left: 20px;
   }
 
   button,
-  .cancel {
+  a.cancel {
     width: 44%;
-    font-size: 20px;
+    height: 36px;
+    font-size: 18px;
   }
 
-  label {
-    font-size: 21px;
+  button.add {
+    width: 220px;
+    height: 30px;
+    font-size: 17px;
+  }
+
+  .top-bar {
+    flex-wrap: wrap;
+  }
+
+  .cell {
+    padding: 8px 4px;
+    font-size: 14px;
+  }
+
+  .cell input,
+  .cell textarea {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .table th {
+    font-size: 11px;
   }
 }

@@ -1,0 +1,125 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Бюджет</title>
+  <link rel="stylesheet" href="{% static 'styles8.css' %}">
+</head>
+<body>
+  <a class="back" href="{% url 'main_page' %}">На главную</a>
+
+  <main class="budget">
+    <form class="form" action="{% url 'budget' %}" method="post">
+      {% csrf_token %}
+
+      <!-- Эти кнопки стоят первыми в коде, чтобы Enter в поле даты сохранял таблицу,
+           а не добавлял строку. На экране их положение задаёт CSS (position: fixed). -->
+      <div class="buttons">
+        <a class="cancel" href="{% url 'budget' %}">Отмена</a>
+        <button class="save" type="submit">Сохранить</button>
+      </div>
+
+      <div class="top-bar">
+        <button class="add" type="submit" name="action" value="add_row"
+                formnovalidate formaction="{% url 'budget' %}#last-row">Продолжить таблицу</button>
+        {% for message in messages %}
+          <p class="message {{ message.tags }}">{{ message }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Название</th>
+              <th>Вид кошелька</th>
+              <th>Лимит</th>
+              <th>Начало</th>
+              <th>Конец</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in rows %}
+            <tr{% if forloop.last %} id="last-row"{% endif %}>
+              <td>
+                <label class="cell">
+                  <textarea name="name" rows="1" maxlength="200" autocomplete="off"
+                            aria-label="Название бюджета"
+                            {% if added and forloop.last %}autofocus{% endif %}>
+{{ row.name }}</textarea>
+                </label>
+              </td>
+              <td>
+                <label class="cell">
+                  <textarea name="wallet" rows="1" maxlength="200" autocomplete="off"
+                            aria-label="Вид кошелька">
+{{ row.wallet }}</textarea>
+                </label>
+              </td>
+              <td>
+                <label class="cell">
+                  <textarea name="limit" rows="1" maxlength="30" autocomplete="off"
+                            aria-label="Лимит в рублях">
+{{ row.limit }}</textarea>
+                </label>
+              </td>
+              <td>
+                <label class="cell">
+                  <input type="text" name="start" value="{{ row.start }}" maxlength="10"
+                         inputmode="numeric" autocomplete="off" placeholder="ДД.ММ.ГГГГ"
+                         pattern="\d{2}[.\-/]\d{2}[.\-/]\d{4}|\d{4}-\d{2}-\d{2}"
+                         title="Дата в формате ДД.ММ.ГГГГ" aria-label="Дата начала">
+                </label>
+              </td>
+              <td>
+                <label class="cell">
+                  <input type="text" name="end" value="{{ row.end }}" maxlength="10"
+                         inputmode="numeric" autocomplete="off" placeholder="ДД.ММ.ГГГГ"
+                         pattern="\d{2}[.\-/]\d{2}[.\-/]\d{4}|\d{4}-\d{2}-\d{2}"
+                         title="Дата в формате ДД.ММ.ГГГГ" aria-label="Дата конца">
+                </label>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </form>
+
+    <h2 class="section-title">Мои бюджеты</h2>
+
+    {% if budgets %}
+    <div class="table-wrap saved">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Название</th>
+            <th>Вид кошелька</th>
+            <th>Лимит</th>
+            <th>Период</th>
+            <th>Потрачено</th>
+            <th>Остаток</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for b in budgets %}
+          <tr>
+            <td>{{ b.name }}</td>
+            <td>{{ b.wallet }}</td>
+            <td>{{ b.limit }} ₽</td>
+            <td class="center">{{ b.start|date:"d.m.Y" }} – {{ b.end|date:"d.m.Y" }}</td>
+            <td>{{ b.spent }} ₽</td>
+            <td class="{% if b.over %}over{% else %}ok{% endif %}">{{ b.left }} ₽</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+      <p class="empty">Бюджетов пока нет.</p>
+    {% endif %}
+  </main>
+</body>
+</html>

@@ -14,32 +14,69 @@
     <form class="form" action="{% url 'income' %}" method="post">
       {% csrf_token %}
 
-      <select name="wallet" aria-label="Тип кошелька" required>
-        <option value="" disabled {% if not form.wallet %}selected{% endif %}>Выберите тип кошелька...</option>
-        {% for key, name in wallets %}
-          <option value="{{ key }}" {% if key == form.wallet %}selected{% endif %}>{{ name }}</option>
-        {% endfor %}
-      </select>
-
-      <select name="category" aria-label="Категория доходов" required>
-        <option value="" disabled {% if not form.category %}selected{% endif %}>Выберите категорию доходов...</option>
-        {% for key, name in categories %}
-          <option value="{{ key }}" {% if key == form.category %}selected{% endif %}>{{ name }}</option>
-        {% endfor %}
-      </select>
-
-      <label for="amount">Введите сумму ваших доходов в рублях</label>
-      <input id="amount" name="amount" type="number" inputmode="decimal"
-             min="0.01" max="999999999999.99" step="0.01"
-             value="{{ form.amount }}" required>
-
-      {% for message in messages %}
-        <p class="message {{ message.tags }}">{{ message }}</p>
-      {% endfor %}
-
+      <!-- Эти кнопки стоят первыми в коде, чтобы Enter в поле даты сохранял таблицу,
+           а не добавлял строку. На экране их положение задаёт CSS (position: fixed). -->
       <div class="buttons">
         <a class="cancel" href="{% url 'income' %}">Отмена</a>
         <button class="save" type="submit">Сохранить</button>
+      </div>
+
+      <div class="top-bar">
+        <button class="add" type="submit" name="action" value="add_row"
+                formnovalidate formaction="{% url 'income' %}#last-row">Продолжить таблицу</button>
+        {% for message in messages %}
+          <p class="message {{ message.tags }}">{{ message }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Дата</th>
+              <th>Вид кошелька</th>
+              <th>Категория доходов</th>
+              <th>Сумма</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in rows %}
+            <tr{% if forloop.last %} id="last-row"{% endif %}>
+              <td>
+                <label class="cell">
+                  <input type="text" name="date" value="{{ row.date }}" maxlength="10"
+                         inputmode="numeric" autocomplete="off" placeholder="ДД.ММ.ГГГГ"
+                         pattern="\d{2}[.\-/]\d{2}[.\-/]\d{4}|\d{4}-\d{2}-\d{2}"
+                         title="Дата в формате ДД.ММ.ГГГГ"
+                         aria-label="Дата"
+                         {% if added and forloop.last %}autofocus{% endif %}>
+                </label>
+              </td>
+              <td>
+                <label class="cell">
+                  <textarea name="wallet" rows="1" maxlength="2000" autocomplete="off"
+                            aria-label="Вид кошелька">
+{{ row.wallet }}</textarea>
+                </label>
+              </td>
+              <td>
+                <label class="cell">
+                  <textarea name="category" rows="1" maxlength="2000" autocomplete="off"
+                            aria-label="Категория доходов">
+{{ row.category }}</textarea>
+                </label>
+              </td>
+              <td>
+                <label class="cell">
+                  <textarea name="amount" rows="1" maxlength="2000" autocomplete="off"
+                            aria-label="Сумма в рублях">
+{{ row.amount }}</textarea>
+                </label>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
     </form>
   </main>

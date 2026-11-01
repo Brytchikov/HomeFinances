@@ -30,11 +30,12 @@
         </a>
 
         <nav>
+            <a href="{% url 'budget' %}">Бюджет</a>
             <a href="{% url 'expenses' %}">Добавить<br>расходы</a>
             <a href="{% url 'income' %}">Добавить<br>доходы</a>
-            <a href="{% url 'report' %}">Отчёт</a>
-            <a href="{% url 'goals' %}">Добавить<br>цель</a>
-            <a href="#">Профиль</a>
+            <a href="{% url 'report' %}">Отчёты</a>
+            <a href="{% url 'goals' %}">Накопления<br>на цель</a>
+            <a href="{% url 'profile' %}">Профиль</a>
 
             <form action="{% url 'logout' %}" method="post" class="logout-form">
                 {% csrf_token %}
